@@ -1,0 +1,3 @@
+[submodule "gotrace"]
+	path = gotrace
+	url = git@github.com:jbardin/gotrace.git
