@@ -1,19 +1,3 @@
-/*
-Copyright The Kubernetes Authors.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 package main
 
 import (
@@ -21,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/samber/lo"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 
@@ -32,22 +15,314 @@ import (
 
 var (
 	KwokZones = []string{"test-zone-a", "test-zone-b", "test-zone-c", "test-zone-d"}
+
+	InstanceFamilies = []string{
+		"m7i-flex", "r5a", "r6g", "r7g", "vt1", "c3", "c5", "c5a", "c5ad", 
+		"c6a", "c6g", "c6gn", "c6i", "c7g", "i3en", "m5a", "m6g", 
+		"t3", "a1", "x2gd", "r8g", "m7g", "m6gd", "hpc7g",
+	}
+
+	InstanceSizes = []string{
+		"12xlarge", "16xlarge", "24xlarge", "2xlarge", "3xlarge", "4xlarge", 
+		"6xlarge", "8xlarge", "large", "xlarge", "micro", "small", "medium",
+	}
 )
 
-func makeGenericInstanceTypeName(cpu, memFactor int, arch string, os corev1.OSName) string {
-	size := fmt.Sprintf("%dx", cpu)
-	var family string
-	switch memFactor {
-	case 2:
-		family = "c" // cpu
-	case 4:
-		family = "s" // standard
-	case 8:
-		family = "m" // memory
-	default:
-		family = "e" // exotic
-	}
-	return fmt.Sprintf("%s-%s-%s-%s", family, size, arch, os)
+
+func getCPUMemoryForInstance(family, size string) (int, int, int, int) {
+	// Define CPU, Memory (GiB), Storage (GiB), and Pod count per instance based on AWS EC2 guidelines
+	switch family {
+	case "m7i-flex":
+		switch size {
+		case "12xlarge": return 48, 192, 300, 768
+		case "16xlarge": return 64, 256, 400, 1024
+		case "2xlarge": return 8, 32, 100, 128
+		case "3xlarge": return 12, 48, 150, 192
+		case "4xlarge": return 16, 64, 200, 256
+		case "6xlarge": return 24, 96, 300, 384
+		case "8xlarge": return 32, 128, 400, 512
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		}
+
+	case "r5a":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+
+	case "r6g":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+
+	case "vt1":
+		switch size {
+		case "12xlarge": return 48, 192, 300, 768
+		case "16xlarge": return 64, 256, 400, 1024
+		case "2xlarge": return 8, 32, 100, 128
+		case "3xlarge": return 12, 48, 150, 192
+		case "4xlarge": return 16, 64, 200, 256
+		case "6xlarge": return 24, 96, 300, 384
+		case "8xlarge": return 32, 128, 400, 512
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		}
+
+	case "c3":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		}
+
+	case "c5":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		}
+
+	case "c5a":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		}
+
+	case "c5ad":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		}
+
+	case "c6a":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+        }
+
+    case "c6g":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+
+	case "c6gn":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+
+	case "c6i":
+		switch size {
+		case "12xlarge": return 48, 96, 300, 768
+		case "16xlarge": return 64, 128, 400, 1024
+		case "2xlarge": return 8, 16, 100, 128
+		case "3xlarge": return 12, 24, 150, 192
+		case "4xlarge": return 16, 32, 200, 256
+		case "6xlarge": return 24, 48, 300, 384
+		case "8xlarge": return 32, 64, 400, 512
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		}
+
+	case "c7g":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+
+	case "i3en":
+		switch size {
+		case "12xlarge": return 48, 384, 7500, 768 // 7.5 TB storage
+		case "16xlarge": return 64, 512, 10000, 1024 // 10 TB storage
+		case "2xlarge": return 8, 64, 2500, 128 // 2.5 TB storage
+		case "3xlarge": return 12, 96, 3750, 192 // 3.75 TB storage
+		case "4xlarge": return 16, 128, 5000, 256 // 5 TB storage
+		case "6xlarge": return 24, 192, 7500, 384 // 7.5 TB storage
+		case "8xlarge": return 32, 256, 10000, 512 // 10 TB storage
+		case "large": return 2, 16, 1250, 32 // 1.25 TB storage
+		case "xlarge": return 4, 32, 2500, 64 // 2.5 TB storage
+		}
+
+	case "m5a":
+		switch size {
+		case "12xlarge": return 48, 192, 300, 768
+		case "16xlarge": return 64, 256, 400, 1024
+		case "2xlarge": return 8, 32, 100, 128
+		case "3xlarge": return 12, 48, 150, 192
+		case "4xlarge": return 16, 64, 200, 256
+		case "6xlarge": return 24, 96, 300, 384
+		case "8xlarge": return 32, 128, 400, 512
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		}
+
+	case "m6g":
+		switch size {
+		case "12xlarge": return 48, 192, 300, 768
+		case "16xlarge": return 64, 256, 400, 1024
+		case "2xlarge": return 8, 32, 100, 128
+		case "3xlarge": return 12, 48, 150, 192
+		case "4xlarge": return 16, 64, 200, 256
+		case "6xlarge": return 24, 96, 300, 384
+		case "8xlarge": return 32, 128, 400, 512
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		}
+
+	case "r7g":
+		switch size {
+		case "12xlarge": return 48, 384, 300, 768
+		case "16xlarge": return 64, 512, 400, 1024
+		case "2xlarge": return 8, 64, 100, 128
+		case "3xlarge": return 12, 96, 150, 192
+		case "4xlarge": return 16, 128, 200, 256
+		case "6xlarge": return 24, 192, 300, 384
+		case "8xlarge": return 32, 256, 400, 512
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		}
+	
+	case "r8g":
+		switch size {
+		case "8xlarge": return 32, 256, 400, 512
+		case "12xlarge": return 48, 384, 600, 768
+		case "16xlarge": return 64, 512, 800, 1024
+		case "24xlarge": return 96, 768, 1200, 1536
+		}
+
+	case "t3":
+		switch size {
+		case "micro": return 2, 1, 50, 32
+		case "small": return 2, 2, 50, 32
+		case "medium": return 2, 4, 50, 32
+		case "large": return 2, 8, 50, 64
+		}
+
+	case "a1":
+		switch size {
+		case "medium": return 1, 2, 50, 16
+		case "large": return 2, 4, 50, 32
+		case "xlarge": return 4, 8, 100, 64
+		case "2xlarge": return 8, 16, 100, 128
+		case "4xlarge": return 16, 32, 200, 256
+		}
+
+	case "hpc7g":
+		switch size {
+		case "2xlarge": return 8, 64, 100, 128
+		case "4xlarge": return 16, 128, 200, 256
+		case "8xlarge": return 32, 256, 400, 512
+		case "16xlarge": return 64, 512, 800, 1024
+		}
+
+	case "x2gd":
+		switch size {
+		case "medium": return 1, 8, 50, 16
+		case "large": return 2, 16, 50, 32
+		case "xlarge": return 4, 32, 100, 64
+		case "2xlarge": return 8, 64, 100, 128
+		case "4xlarge": return 16, 128, 200, 256
+		case "8xlarge": return 32, 256, 400, 512
+		case "12xlarge": return 48, 384, 600, 768
+		case "16xlarge": return 64, 512, 800, 1024
+		}
+
+	case "m6gd":
+		switch size {
+		case "medium": return 1, 4, 50, 16
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		case "2xlarge": return 8, 32, 100, 128
+		case "4xlarge": return 16, 64, 200, 256
+		case "8xlarge": return 32, 128, 400, 512
+		case "12xlarge": return 48, 192, 600, 768
+		case "16xlarge": return 64, 256, 800, 1024
+		}
+
+	case "m7g":
+		switch size {
+		case "medium": return 1, 4, 50, 16
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		case "2xlarge": return 8, 32, 100, 128
+		case "4xlarge": return 16, 64, 200, 256
+		case "8xlarge": return 32, 128, 400, 512
+		case "12xlarge": return 48, 192, 600, 768
+		case "16xlarge": return 64, 256, 800, 1024
+		}
+    }
+	return 0, 0, 0, 0
 }
 
 func priceFromResources(resources corev1.ResourceList) float64 {
@@ -57,55 +332,59 @@ func priceFromResources(resources corev1.ResourceList) float64 {
 		case corev1.ResourceCPU:
 			price += 0.025 * v.AsApproximateFloat64()
 		case corev1.ResourceMemory:
-			price += 0.001 * v.AsApproximateFloat64() / (1e9)
-			// case ResourceGPUVendorA, ResourceGPUVendorB:
-			// 	price += 1.0
+			price += 0.001 * v.AsApproximateFloat64() / (1e9) // Convert bytes to GiB
 		}
 	}
 	return price
 }
 
-func constructGenericInstanceTypes() []kwok.InstanceTypeOptions {
+func constructInstanceTypes() []kwok.InstanceTypeOptions {
 	var instanceTypesOptions []kwok.InstanceTypeOptions
 
-	for _, cpu := range []int{1, 2, 4, 8, 16, 32, 48, 64, 96, 128, 192, 256} {
-		for _, memFactor := range []int{2, 4, 8} {
-			for _, os := range []corev1.OSName{corev1.Linux, corev1.Windows} {
-				for _, arch := range []string{v1.ArchitectureAmd64, v1.ArchitectureArm64} {
-					// Construct instance type details, then construct offerings.
-					name := makeGenericInstanceTypeName(cpu, memFactor, arch, os)
-					mem := cpu * memFactor
-					pods := lo.Clamp(cpu*16, 0, 1024)
-					opts := kwok.InstanceTypeOptions{
-						Name:             name,
-						Architecture:     arch,
-						OperatingSystems: []corev1.OSName{os},
-						Resources: corev1.ResourceList{
-							corev1.ResourceCPU:              resource.MustParse(fmt.Sprintf("%d", cpu)),
-							corev1.ResourceMemory:           resource.MustParse(fmt.Sprintf("%dGi", mem)),
-							corev1.ResourcePods:             resource.MustParse(fmt.Sprintf("%d", pods)),
-							corev1.ResourceEphemeralStorage: resource.MustParse("20Gi"),
-						},
-					}
-					price := priceFromResources(opts.Resources)
+	for _, family := range InstanceFamilies {
+		for _, size := range InstanceSizes {
+			cpu, mem, storage, pods := getCPUMemoryForInstance(family, size)
+			if cpu == 0 || mem == 0 {
+				continue // Skip undefined instances
+			}
 
-					opts.Offerings = []kwok.KWOKOffering{}
-					for _, zone := range KwokZones {
-						for _, ct := range []string{v1.CapacityTypeSpot, v1.CapacityTypeOnDemand} {
-							opts.Offerings = append(opts.Offerings, kwok.KWOKOffering{
-								Requirements: []corev1.NodeSelectorRequirement{
-									corev1.NodeSelectorRequirement{Key: v1.CapacityTypeLabelKey, Operator: corev1.NodeSelectorOpIn, Values: []string{ct}},
-									corev1.NodeSelectorRequirement{Key: corev1.LabelTopologyZone, Operator: corev1.NodeSelectorOpIn, Values: []string{zone}},
-								},
-								Offering: cloudprovider.Offering{
-									Price:     lo.Ternary(ct == v1.CapacityTypeSpot, price*.7, price),
-									Available: true,
-								},
-							})
-						}
-					}
-					instanceTypesOptions = append(instanceTypesOptions, opts)
+			// Ensure that only Linux-based instances are generated for simplicity
+			for _, arch := range []string{v1.ArchitectureAmd64, v1.ArchitectureArm64} {
+				opts := kwok.InstanceTypeOptions{
+					Name:             fmt.Sprintf("%s.%s", family, size),
+					Architecture:     arch,
+					OperatingSystems: []corev1.OSName{corev1.Linux},
+					Resources: corev1.ResourceList{
+						corev1.ResourceCPU:              resource.MustParse(fmt.Sprintf("%d", cpu)),
+						corev1.ResourceMemory:           resource.MustParse(fmt.Sprintf("%dGi", mem)),
+						corev1.ResourcePods:             resource.MustParse(fmt.Sprintf("%d", pods)),
+						corev1.ResourceEphemeralStorage: resource.MustParse(fmt.Sprintf("%dGi", storage)),
+					},
 				}
+				price := priceFromResources(opts.Resources)
+
+				opts.Offerings = []kwok.KWOKOffering{}
+				for _, zone := range KwokZones {
+					opts.Offerings = append(opts.Offerings, kwok.KWOKOffering{
+						Requirements: []corev1.NodeSelectorRequirement{
+							{
+								Key:      v1.CapacityTypeLabelKey,
+								Operator: corev1.NodeSelectorOpIn,
+								Values:   []string{v1.CapacityTypeOnDemand}, // Only on-demand instances
+							},
+							{
+								Key:      corev1.LabelTopologyZone,
+								Operator: corev1.NodeSelectorOpIn,
+								Values:   []string{zone},
+							},
+						},
+						Offering: cloudprovider.Offering{
+							Price:     price,
+							Available: true,
+						},
+					})
+				}
+				instanceTypesOptions = append(instanceTypesOptions, opts)
 			}
 		}
 	}
@@ -113,7 +392,7 @@ func constructGenericInstanceTypes() []kwok.InstanceTypeOptions {
 }
 
 func main() {
-	opts := constructGenericInstanceTypes()
+	opts := constructInstanceTypes()
 	output, err := json.MarshalIndent(opts, "", "    ")
 	if err != nil {
 		fmt.Printf("could not marshal generated instance types to JSON: %v\n", err)
@@ -121,3 +400,4 @@ func main() {
 	}
 	fmt.Print(string(output))
 }
+
