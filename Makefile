@@ -1,5 +1,5 @@
 # This is the format of an AWS ECR Public Repo as an example.
-export KWOK_REPO ?= 463020534911.dkr.ecr.us-east-1.amazonaws.com
+export KWOK_REPO ?= docker.io/kaykyfidelis
 export KARPENTER_NAMESPACE=kube-system
 
 HELM_OPTS ?= --set logLevel=debug \

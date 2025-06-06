@@ -19,7 +19,7 @@ var (
 	InstanceFamilies = []string{
 		"m7i-flex", "r5a", "r6g", "r7g", "vt1", "c3", "c5", "c8g", "c5a", "c5ad", "c5d", 
 		"c5n", "c6a", "c6g", "c6gn", "c6i", "c7g", "i3en", "m5a", "m6a",  "m6g", "r5",
-		"t3", "a1", "x2gd", "r8g", "m7g", "m6gd", "hpc7g",
+		"t3", "a1", "x2gd", "r8g", "m7g", "m6gd", "hpc7g", "t4g",
 	}
 
 	InstanceSizes = []string{
@@ -386,7 +386,17 @@ func getCPUMemoryForInstance(family, size string) (int, int, int, int) {
 		case "12xlarge": return 48, 192, 600, 768
 		case "16xlarge": return 64, 256, 800, 1024
 		}
-    }
+
+	case "t4g":
+		switch size {
+		case "micro": return 2, 1, 20, 32
+		case "small": return 2, 2, 30, 32
+		case "medium": return 2, 4, 40, 32
+		case "large": return 2, 8, 50, 32
+		case "xlarge": return 4, 16, 100, 64
+		case "2xlarge": return 8, 32, 100, 128
+		}
+	}
 	return 0, 0, 0, 0
 }
 
