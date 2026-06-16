@@ -9123,7 +9123,7 @@
         "name": "c3.3xlarge",
         "offerings": [
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9143,7 +9143,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9163,7 +9163,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9183,7 +9183,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9598,7 +9598,7 @@
         "name": "c3.6xlarge",
         "offerings": [
             {
-                "Price": 0.6515396075520001,
+                "Price": 0.651539607552,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9618,7 +9618,7 @@
                 ]
             },
             {
-                "Price": 0.6515396075520001,
+                "Price": 0.651539607552,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9638,7 +9638,7 @@
                 ]
             },
             {
-                "Price": 0.6515396075520001,
+                "Price": 0.651539607552,
                 "Available": true,
                 "Requirements": [
                     {
@@ -9658,7 +9658,7 @@
                 ]
             },
             {
-                "Price": 0.6515396075520001,
+                "Price": 0.651539607552,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12353,7 +12353,7 @@
         "name": "c8g.12xlarge",
         "offerings": [
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12373,7 +12373,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12393,7 +12393,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12413,7 +12413,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12733,7 +12733,7 @@
         "name": "c8g.24xlarge",
         "offerings": [
             {
-                "Price": 2.6061584302080005,
+                "Price": 2.606158430208,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12753,7 +12753,7 @@
                 ]
             },
             {
-                "Price": 2.6061584302080005,
+                "Price": 2.606158430208,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12773,7 +12773,7 @@
                 ]
             },
             {
-                "Price": 2.6061584302080005,
+                "Price": 2.606158430208,
                 "Available": true,
                 "Requirements": [
                     {
@@ -12793,7 +12793,7 @@
                 ]
             },
             {
-                "Price": 2.6061584302080005,
+                "Price": 2.606158430208,
                 "Available": true,
                 "Requirements": [
                     {
@@ -21093,7 +21093,7 @@
         "name": "c6a.3xlarge",
         "offerings": [
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -21113,7 +21113,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -21133,7 +21133,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -21153,7 +21153,7 @@
                 ]
             },
             {
-                "Price": 0.325769803776,
+                "Price": 0.32576980377600007,
                 "Available": true,
                 "Requirements": [
                     {
@@ -25748,7 +25748,7 @@
         "name": "c6i.12xlarge",
         "offerings": [
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -25768,7 +25768,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -25788,7 +25788,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -25808,7 +25808,7 @@
                 ]
             },
             {
-                "Price": 1.3030792151040003,
+                "Price": 1.303079215104,
                 "Available": true,
                 "Requirements": [
                     {
@@ -49403,7 +49403,7 @@
         "name": "c7a.12xlarge",
         "offerings": [
             {
-                "Price": 1.303079215104,
+                "Price": 1.3030792151040003,
                 "Available": true,
                 "Requirements": [
                     {
@@ -49423,7 +49423,7 @@
                 ]
             },
             {
-                "Price": 1.303079215104,
+                "Price": 1.3030792151040003,
                 "Available": true,
                 "Requirements": [
                     {
@@ -49443,7 +49443,7 @@
                 ]
             },
             {
-                "Price": 1.303079215104,
+                "Price": 1.3030792151040003,
                 "Available": true,
                 "Requirements": [
                     {
@@ -49463,7 +49463,7 @@
                 ]
             },
             {
-                "Price": 1.303079215104,
+                "Price": 1.3030792151040003,
                 "Available": true,
                 "Requirements": [
                     {

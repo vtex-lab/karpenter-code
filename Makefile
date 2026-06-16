@@ -1,5 +1,5 @@
-# This is the format of an AWS ECR Public Repo as an example.
-export KWOK_REPO ?= docker.io/kaykyfidelis
+# Replace {YourDockerUserName} with your Docker Hub username before running
+export KWOK_REPO ?= docker.io/{YourDockerUserName}
 export KARPENTER_NAMESPACE=kube-system
 
 HELM_OPTS ?= --set logLevel=debug \
